@@ -1,0 +1,323 @@
+USE [statlab]
+DROP TABLE [dbo].[documents]
+GO
+CREATE TABLE [dbo].[documents](
+	[clientID] [varchar](50) NULL,
+	[patientID] [varchar](50) NULL,
+	[patientname] [varchar](500) NULL,
+	[daterun] [date] NULL,
+	[daterequested] [date] NULL,
+	[documentname] [varchar](1000) NULL,
+	[ProviderID] [varchar](50) NULL,
+	[DateIn] [datetime] NOT NULL CONSTRAINT [DF_documents_DateIn]  DEFAULT (getdate())
+) ON [PRIMARY]
+SET ANSI_PADDING OFF
+GO
+
+DROP TABLE [dbo].[Ethnicity]
+GO
+CREATE TABLE [dbo].[Ethnicity](
+	[Company] [int] NOT NULL CONSTRAINT [DF__Ethnicity__Compa__2704CA5F]  DEFAULT ((0)),
+	[EthnicityID] [int] NOT NULL,
+	[Ethnicity] [varchar](100) NOT NULL,
+	[EnteredBy] [varchar](100) NOT NULL,
+	[ChangedBy] [varchar](100) NULL,
+	[DateIn] [datetime] NOT NULL CONSTRAINT [DF__Ethnicity__DateI__27F8EE98]  DEFAULT (getdate()),
+	[DateChange] [datetime] NULL,
+	[PortalID] [uniqueidentifier] NOT NULL DEFAULT (newid()),
+ CONSTRAINT [PK__Ethnicity__2610A626] PRIMARY KEY CLUSTERED 
+(
+	[Company] ASC,
+	[EthnicityID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, FILLFACTOR = 80) ON [PRIMARY]
+) ON [PRIMARY]
+
+
+DROP TABLE [dbo].[Orders]
+GO
+CREATE TABLE [dbo].[Orders](
+	[OrderID] [uniqueidentifier] NOT NULL CONSTRAINT [DF_Orders_OrderID]  DEFAULT (newid()),
+	[ProviderID] [uniqueidentifier] NOT NULL,
+	[ClientID] [uniqueidentifier] NOT NULL,
+	[PatientID] [uniqueidentifier] NOT NULL,
+	[CollectedBy] [varchar](200) NULL,
+	[SpecimenType] [varchar](200) NULL,
+	[DateOrdered] [datetime] NOT NULL CONSTRAINT [DF_Orders_DateOrdered]  DEFAULT (getdate()),
+	[DateCollected] [datetime] NOT NULL CONSTRAINT [DF_Orders_DateCollected]  DEFAULT (getdate()),
+	[OrderStatus] [int] NOT NULL CONSTRAINT [DF_Orders_OrderStatus]  DEFAULT ((0)),
+	[DateIn] [datetime] NOT NULL CONSTRAINT [DF_Orders_DateIn]  DEFAULT (getdate()),
+ CONSTRAINT [PK_Orders] PRIMARY KEY CLUSTERED 
+(
+	[OrderID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+
+DROP TABLE [dbo].[OrderTests]
+GO
+CREATE TABLE [dbo].[OrderTests](
+	[OrderID] [uniqueidentifier] NOT NULL,
+	[TestID] [varchar](50) NOT NULL,
+	[SeqNo] [int] IDENTITY(1,1) NOT NULL,
+	[DateIn] [datetime] NOT NULL CONSTRAINT [DF_OrderTests_DateIn]  DEFAULT (getdate()),
+ CONSTRAINT [PK_OrderTests] PRIMARY KEY CLUSTERED 
+(
+	[OrderID] ASC,
+	[TestID] ASC,
+	[SeqNo] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+DROP TABLE [dbo].[Patients]
+GO
+CREATE TABLE [dbo].[Patients](
+	[ClientID] [uniqueidentifier] NOT NULL,
+	[PatientID] [uniqueidentifier] NOT NULL CONSTRAINT [DF_Patients_PatientID]  DEFAULT (newid()),
+	[NameLast] [varchar](200) NOT NULL,
+	[NameFirst] [varchar](200) NOT NULL,
+	[DOB] [date] NOT NULL,
+	[Sex] [varchar](1) NOT NULL,
+	[MRN] [varchar](200) NOT NULL,
+	[RaceID] [int] NOT NULL CONSTRAINT [DF_Patients_RaceID]  DEFAULT ((0)),
+	[EthnicityID] [int] NOT NULL CONSTRAINT [DF_Patients_EthnicityID]  DEFAULT ((0)),
+	[StreetAddress] [varchar](200) NULL,
+	[ZipCode] [varchar](100) NULL,
+	[City] [varchar](200) NULL,
+	[State] [varchar](100) NULL,
+	[County] [varchar](200) NULL,
+	[Telephone] [varchar](200) NULL,
+	[Email] [varchar](200) NULL,
+	[DateIn] [datetime] NOT NULL CONSTRAINT [DF_Patients_DateIn]  DEFAULT (getdate()),
+ CONSTRAINT [PK_Patients] PRIMARY KEY CLUSTERED 
+(
+	[PatientID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+
+DROP TABLE [dbo].[Providers]
+GO
+CREATE TABLE [dbo].[Providers](
+	[ClientID] [uniqueidentifier] NOT NULL,
+	[ProviderID] [uniqueidentifier] NOT NULL,
+	[ProviderName] [varchar](200) NOT NULL,
+	[Status] [int] NOT NULL CONSTRAINT [DF_Providers_Status]  DEFAULT ((0)),
+ CONSTRAINT [PK_Providers] PRIMARY KEY CLUSTERED 
+(
+	[ClientID] ASC,
+	[ProviderID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+
+DROP TABLE [dbo].[Race]
+GO
+CREATE TABLE [dbo].[Race](
+	[Company] [int] NOT NULL CONSTRAINT [DF__Race__Company__24D2692A]  DEFAULT ((0)),
+	[RaceID] [int] NOT NULL,
+	[RaceDesc] [varchar](50) NOT NULL,
+	[Category] [int] NOT NULL CONSTRAINT [DF_Race_Category]  DEFAULT ((1)),
+	[EnteredBy] [varchar](100) NOT NULL,
+	[ChangedBy] [varchar](100) NULL,
+	[DateIn] [datetime] NOT NULL CONSTRAINT [DF__Race__DateIn__25C68D63]  DEFAULT (getdate()),
+	[DateChange] [datetime] NULL,
+	[PortalID] [uniqueidentifier] NOT NULL DEFAULT (newid()),
+ CONSTRAINT [PK__Race__23DE44F1] PRIMARY KEY CLUSTERED 
+(
+	[Company] ASC,
+	[RaceID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, FILLFACTOR = 80) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+
+DROP TABLE [dbo].[SpecimenType]
+GO
+CREATE TABLE [dbo].[SpecimenType](
+	[SpecimenType] [varchar](30) NOT NULL,
+	[RowStatus] [smallint] NOT NULL CONSTRAINT [DF__SpecimenT__RowSt__5629CD9C]  DEFAULT ((0)),
+	[EnteredBy] [varchar](100) NOT NULL,
+	[ChangedBy] [varchar](100) NULL,
+	[DateIn] [datetime] NOT NULL CONSTRAINT [DF__SpecimenT__DateI__571DF1D5]  DEFAULT (getdate()),
+	[DateChange] [datetime] NULL,
+	[PortalID] [uniqueidentifier] NOT NULL CONSTRAINT [DF__SpecimenT__Porta__6EF57B66]  DEFAULT (newid()),
+	[SpecimenID] [int] IDENTITY(1,1) NOT NULL,
+ CONSTRAINT [PK__Specimen__39792B5184F587FF] PRIMARY KEY CLUSTERED 
+(
+	[SpecimenID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, FILLFACTOR = 80) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+
+DROP TABLE [dbo].[Tests]
+GO
+CREATE TABLE [dbo].[Tests](
+	[PortalID] [uniqueidentifier] NOT NULL CONSTRAINT [DF__Tests__PortalID__0B91BA14]  DEFAULT (newid()),
+	[ClientID] [varchar](50) NOT NULL,
+	[TestID] [varchar](50) NOT NULL,
+	[TestName] [varchar](200) NOT NULL,
+	[Status] [int] NOT NULL CONSTRAINT [DF_Tests_Status]  DEFAULT ((0)),
+	[EnteredBy] [varchar](100) NOT NULL,
+	[DateIn] [datetime] NOT NULL CONSTRAINT [DF_Tests_DateIn]  DEFAULT (getdate()),
+	[DateChange] [datetime] NULL,
+	[ChangedBy] [varchar](100) NULL,
+ CONSTRAINT [PK_Tests] PRIMARY KEY CLUSTERED 
+(
+	[TestID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+
+DROP TABLE [dbo].[Users]
+GO
+CREATE TABLE [dbo].[Users](
+	[ClientName] [varchar](200) NULL,
+	[ClientID] [varchar](50) NOT NULL,
+	[ProviderID] [varchar](50) NULL,
+	[PatientID] [varchar](50) NULL,
+	[UserName] [varchar](500) NULL,
+	[Password] [varchar](32) NULL,
+	[DOB] [date] NULL,
+	[ZipCode] [varchar](50) NULL,
+	[Email] [varchar](255) NULL,
+	[Phone] [varchar](50) NULL,
+	[SSN] [varchar](50) NULL,
+	[DateIn] [datetime] NOT NULL CONSTRAINT [DF_users_DateIn]  DEFAULT (getdate())
+) ON [PRIMARY]
+GO
+
+INSERT INTO documents(clientID, patientID, patientname, daterun, daterequested, documentname, ProviderID, DateIn) VALUES ('29DAB586-C65F-4DC2-B33C-0BEA7CA26BA2', '29AA2597-8172-4AA6-9D58-0BADB7989D9D', 'TEST, PATIENT 02', '2020-08-31', '2020-08-31', 'PDF/0079/TESTPATIENT02_PON_79-2-275614.pdf', '1', 'Sep 21 2020 10:29PM')
+INSERT INTO documents(clientID, patientID, patientname, daterun, daterequested, documentname, ProviderID, DateIn) VALUES ('29DAB586-C65F-4DC2-B33C-0BEA7CA26BA2', '09D5CEAC-9517-4B7A-9D0C-78FDE074C6CD', 'TEST, PATIENT 03', '2020-08-31', '2020-08-31', 'PDF/0079/TESTPATIENT03_PON_79-2-275615.pdf', '2', 'Sep 21 2020 10:29PM')
+INSERT INTO documents(clientID, patientID, patientname, daterun, daterequested, documentname, ProviderID, DateIn) VALUES ('29DAB586-C65F-4DC2-B33C-0BEA7CA26BA2', '3852269E-CE72-435F-B4F4-7221B5C5658F', 'TEST, PATIENT 04', '2020-08-31', '2020-08-31', 'PDF/0079/TESTPATIENT04_PON_79-2-275616.pdf', '2', 'Sep 21 2020 10:29PM')
+INSERT INTO documents(clientID, patientID, patientname, daterun, daterequested, documentname, ProviderID, DateIn) VALUES ('29DAB586-C65F-4DC2-B33C-0BEA7CA26BA2', '8C36841C-8237-4E9D-BE0D-A9B9769CB44E', 'TEST, PATIENT 01', '2020-08-31', '2020-08-31', 'PDF/0079/TESTPATIENT01_PON_79-2-275613.pdf', '1', 'Sep 21 2020 10:29PM')
+
+INSERT INTO Ethnicity(Company, EthnicityID, Ethnicity, EnteredBy, ChangedBy, DateIn, DateChange, PortalID) VALUES (0, 0, 'Unknown', 'Apex', NULL, 'Jan  1 2000 12:00AM', NULL, '2B8ECCE2-BA08-4422-9C34-7AED914D9FAC')
+INSERT INTO Ethnicity(Company, EthnicityID, Ethnicity, EnteredBy, ChangedBy, DateIn, DateChange, PortalID) VALUES (0, 1, 'Hispanic or Latino', 'Apex', NULL, 'Jan  1 2000 12:00AM', 'Sep 14 2020  8:52PM', 'B0A3C195-8526-4FED-AD60-6D10302DD2B2')
+INSERT INTO Ethnicity(Company, EthnicityID, Ethnicity, EnteredBy, ChangedBy, DateIn, DateChange, PortalID) VALUES (0, 2, 'Not Hispanic or Latino', 'Apex', NULL, 'Jan  1 2000 12:00AM', 'Sep 14 2020  8:53PM', 'DAA94F2A-244C-4810-B515-C8F1D15BF716')
+
+INSERT INTO Orders(OrderID, ProviderID, ClientID, PatientID, CollectedBy, SpecimenType, DateOrdered, DateCollected, OrderStatus, DateIn) VALUES ('B228D35D-9C6F-4528-93FA-2358C49EAA67', '05F87BFD-9294-4351-9ADC-F79D89BDC1DD', '29DAB586-C65F-4DC2-B33C-0BEA7CA26BA2', '3852269E-CE72-435F-B4F4-7221B5C5658F', 'Tech 2', 'Serum', 'Sep 21 2020  8:58PM', 'Sep 21 2020  8:58PM', 0, 'Sep 21 2020  8:58PM')
+INSERT INTO Orders(OrderID, ProviderID, ClientID, PatientID, CollectedBy, SpecimenType, DateOrdered, DateCollected, OrderStatus, DateIn) VALUES ('84E55AC3-C434-4382-9DD8-2416E171D624', '05F87BFD-9294-4351-9ADC-F79D89BDC1DD', '29DAB586-C65F-4DC2-B33C-0BEA7CA26BA2', '09D5CEAC-9517-4B7A-9D0C-78FDE074C6CD', 'Tech 1', 'Whole Blood', 'Sep 21 2020  8:58PM', 'Sep 21 2020  8:58PM', 0, 'Sep 21 2020  8:58PM')
+INSERT INTO Orders(OrderID, ProviderID, ClientID, PatientID, CollectedBy, SpecimenType, DateOrdered, DateCollected, OrderStatus, DateIn) VALUES ('AE827417-3952-43E7-AB19-33361958431F', '40F7DDEA-62B6-4582-B6FC-AA1D8513F8A6', '29DAB586-C65F-4DC2-B33C-0BEA7CA26BA2', '8C36841C-8237-4E9D-BE0D-A9B9769CB44E', 'Tech 2', 'Serum', 'Sep 21 2020  8:56PM', 'Sep 21 2020  8:56PM', 0, 'Sep 21 2020  8:56PM')
+INSERT INTO Orders(OrderID, ProviderID, ClientID, PatientID, CollectedBy, SpecimenType, DateOrdered, DateCollected, OrderStatus, DateIn) VALUES ('BFAA8F59-9D3E-42C2-AFA5-BFDEDDD0AD80', '40F7DDEA-62B6-4582-B6FC-AA1D8513F8A6', '29DAB586-C65F-4DC2-B33C-0BEA7CA26BA2', '29AA2597-8172-4AA6-9D58-0BADB7989D9D', 'Tech 1', 'Serum', 'Sep 21 2020 12:00AM', 'Sep 21 2020 12:00AM', 0, 'Sep 21 2020  8:52PM')
+
+INSERT INTO OrderTests(OrderID, TestID, DateIn) VALUES ('B228D35D-9C6F-4528-93FA-2358C49EAA67', '1012', 'Sep 21 2020 10:15PM')
+INSERT INTO OrderTests(OrderID, TestID, DateIn) VALUES ('B228D35D-9C6F-4528-93FA-2358C49EAA67', '1013', 'Sep 21 2020 10:15PM')
+INSERT INTO OrderTests(OrderID, TestID, DateIn) VALUES ('B228D35D-9C6F-4528-93FA-2358C49EAA67', '1016', 'Sep 21 2020 10:15PM')
+INSERT INTO OrderTests(OrderID, TestID, DateIn) VALUES ('B228D35D-9C6F-4528-93FA-2358C49EAA67', '1017', 'Sep 21 2020 10:15PM')
+INSERT INTO OrderTests(OrderID, TestID, DateIn) VALUES ('B228D35D-9C6F-4528-93FA-2358C49EAA67', '10214', 'Sep 21 2020 10:15PM')
+INSERT INTO OrderTests(OrderID, TestID, DateIn) VALUES ('B228D35D-9C6F-4528-93FA-2358C49EAA67', '1023', 'Sep 21 2020 10:15PM')
+INSERT INTO OrderTests(OrderID, TestID, DateIn) VALUES ('B228D35D-9C6F-4528-93FA-2358C49EAA67', '1133', 'Sep 21 2020 10:15PM')
+INSERT INTO OrderTests(OrderID, TestID, DateIn) VALUES ('B228D35D-9C6F-4528-93FA-2358C49EAA67', '1243', 'Sep 21 2020 10:15PM')
+INSERT INTO OrderTests(OrderID, TestID, DateIn) VALUES ('84E55AC3-C434-4382-9DD8-2416E171D624', '1013', 'Sep 21 2020 10:15PM')
+INSERT INTO OrderTests(OrderID, TestID, DateIn) VALUES ('AE827417-3952-43E7-AB19-33361958431F', '1007', 'Sep 21 2020 10:15PM')
+INSERT INTO OrderTests(OrderID, TestID, DateIn) VALUES ('AE827417-3952-43E7-AB19-33361958431F', '1007', 'Sep 21 2020 10:15PM')
+INSERT INTO OrderTests(OrderID, TestID, DateIn) VALUES ('BFAA8F59-9D3E-42C2-AFA5-BFDEDDD0AD80', '1009', 'Sep 21 2020 10:15PM')
+INSERT INTO OrderTests(OrderID, TestID, DateIn) VALUES ('BFAA8F59-9D3E-42C2-AFA5-BFDEDDD0AD80', '1009', 'Sep 21 2020 10:15PM')
+INSERT INTO OrderTests(OrderID, TestID, DateIn) VALUES ('BFAA8F59-9D3E-42C2-AFA5-BFDEDDD0AD80', '1009', 'Sep 21 2020 10:15PM')
+INSERT INTO OrderTests(OrderID, TestID, DateIn) VALUES ('BFAA8F59-9D3E-42C2-AFA5-BFDEDDD0AD80', '1013', 'Sep 28 2020  6:31PM')
+INSERT INTO OrderTests(OrderID, TestID, DateIn) VALUES ('BFAA8F59-9D3E-42C2-AFA5-BFDEDDD0AD80', '1013', 'Sep 28 2020  6:34PM')
+INSERT INTO OrderTests(OrderID, TestID, DateIn) VALUES ('BFAA8F59-9D3E-42C2-AFA5-BFDEDDD0AD80', '10214', 'Sep 28 2020  6:27PM')
+INSERT INTO OrderTests(OrderID, TestID, DateIn) VALUES ('BFAA8F59-9D3E-42C2-AFA5-BFDEDDD0AD80', '10214', 'Sep 28 2020  6:30PM')
+INSERT INTO OrderTests(OrderID, TestID, DateIn) VALUES ('BFAA8F59-9D3E-42C2-AFA5-BFDEDDD0AD80', '10214', 'Sep 28 2020  6:31PM')
+
+INSERT INTO Patients(ClientID, PatientID, NameLast, NameFirst, DOB, Sex, MRN, RaceID, EthnicityID, StreetAddress, ZipCode, City, State, County, Telephone, Email, DateIn) VALUES ('29DAB586-C65F-4DC2-B33C-0BEA7CA26BA2', '29AA2597-8172-4AA6-9D58-0BADB7989D9D', 'TEST', 'PATIENT 02', '1950-02-02', 'M', '1', 0, 0, '123 Main Street', '33101', 'Miami', 'FL', 'Miami-Dade', '5555551212', 'myemail@internet.com', 'Sep 21 2020  8:38PM')
+INSERT INTO Patients(ClientID, PatientID, NameLast, NameFirst, DOB, Sex, MRN, RaceID, EthnicityID, StreetAddress, ZipCode, City, State, County, Telephone, Email, DateIn) VALUES ('29DAB586-C65F-4DC2-B33C-0BEA7CA26BA2', '3852269E-CE72-435F-B4F4-7221B5C5658F', 'TEST', 'PATIENT 04', '1950-04-04', 'M', '3', 3, 1, '123 OAK STREET', '33101', 'MIAMI', 'FL', NULL, '5555551212', NULL, 'Sep 21 2020  8:44PM')
+INSERT INTO Patients(ClientID, PatientID, NameLast, NameFirst, DOB, Sex, MRN, RaceID, EthnicityID, StreetAddress, ZipCode, City, State, County, Telephone, Email, DateIn) VALUES ('29DAB586-C65F-4DC2-B33C-0BEA7CA26BA2', '09D5CEAC-9517-4B7A-9D0C-78FDE074C6CD', 'TEST', 'PATIENT 03', '1950-03-03', 'F', '2', 6, 2, '', NULL, NULL, NULL, NULL, '5555551212', NULL, 'Sep 21 2020  8:39PM')
+INSERT INTO Patients(ClientID, PatientID, NameLast, NameFirst, DOB, Sex, MRN, RaceID, EthnicityID, StreetAddress, ZipCode, City, State, County, Telephone, Email, DateIn) VALUES ('29DAB586-C65F-4DC2-B33C-0BEA7CA26BA2', '8C36841C-8237-4E9D-BE0D-A9B9769CB44E', 'TEST', 'PATIENT 01', '1950-01-01', 'M', '4', 0, 0, NULL, NULL, NULL, NULL, NULL, '5555551212', NULL, 'Sep 21 2020  8:45PM')
+
+INSERT INTO Providers(ClientID, ProviderID, ProviderName, Status) VALUES ('29DAB586-C65F-4DC2-B33C-0BEA7CA26BA2', '40F7DDEA-62B6-4582-B6FC-AA1D8513F8A6', 'Test Provider 1', 1)
+INSERT INTO Providers(ClientID, ProviderID, ProviderName, Status) VALUES ('29DAB586-C65F-4DC2-B33C-0BEA7CA26BA2', '05F87BFD-9294-4351-9ADC-F79D89BDC1DD', 'Test Provider 2', 1)
+
+INSERT INTO Race(Company, RaceID, RaceDesc, Category, EnteredBy, ChangedBy, DateIn, DateChange, PortalID) VALUES (0, 0, 'Unknown', 0, 'SLM', NULL, 'May  5 2020 11:13AM', NULL, '2E0148A7-DEF6-4554-AD77-4A95D5F8D34B')
+INSERT INTO Race(Company, RaceID, RaceDesc, Category, EnteredBy, ChangedBy, DateIn, DateChange, PortalID) VALUES (0, 1, 'American Indian or Alaska Native', 0, 'SLM', NULL, 'May  5 2020 11:13AM', NULL, '3B7A5A97-8045-43A4-B8B9-6C47DC264500')
+INSERT INTO Race(Company, RaceID, RaceDesc, Category, EnteredBy, ChangedBy, DateIn, DateChange, PortalID) VALUES (0, 2, 'Asian', 1, 'SLM', NULL, 'May  5 2020 11:13AM', NULL, '0D66830C-1F1C-406F-BB84-EEDF74EE566A')
+INSERT INTO Race(Company, RaceID, RaceDesc, Category, EnteredBy, ChangedBy, DateIn, DateChange, PortalID) VALUES (0, 3, 'Black or African American', 0, 'SLM', NULL, 'May  5 2020 11:13AM', NULL, 'C4164D91-6801-498F-993E-6A975665881E')
+INSERT INTO Race(Company, RaceID, RaceDesc, Category, EnteredBy, ChangedBy, DateIn, DateChange, PortalID) VALUES (0, 4, 'Other Race', 0, 'SLM', NULL, 'May  5 2020 11:13AM', NULL, 'C558FBB8-9778-4863-A0D8-4E68673D8FB8')
+INSERT INTO Race(Company, RaceID, RaceDesc, Category, EnteredBy, ChangedBy, DateIn, DateChange, PortalID) VALUES (0, 5, 'Native Hawaiian or Other Pacific Islander', 1, 'SLM', NULL, 'May  5 2020 11:13AM', NULL, 'F1555C15-E2A1-4833-92AF-366F238253D6')
+INSERT INTO Race(Company, RaceID, RaceDesc, Category, EnteredBy, ChangedBy, DateIn, DateChange, PortalID) VALUES (0, 6, 'White', 0, 'SLM', NULL, 'May  5 2020 11:13AM', NULL, '2F5974D4-4CBE-4D49-9139-2DD2F0BFECA5')
+INSERT INTO Race(Company, RaceID, RaceDesc, Category, EnteredBy, ChangedBy, DateIn, DateChange, PortalID) VALUES (0, 7, 'Asian Indian', 2, 'SLM', NULL, 'Sep 14 2020 12:00AM', NULL, '39D76E28-7749-449A-8359-EEC000E7267F')
+INSERT INTO Race(Company, RaceID, RaceDesc, Category, EnteredBy, ChangedBy, DateIn, DateChange, PortalID) VALUES (0, 8, 'Chinese', 2, 'SLM', NULL, 'Sep 14 2020  8:38PM', NULL, '5900D87F-F90E-4518-8293-B78206BE8F18')
+INSERT INTO Race(Company, RaceID, RaceDesc, Category, EnteredBy, ChangedBy, DateIn, DateChange, PortalID) VALUES (0, 9, 'Filipino', 2, 'SLM', NULL, 'Sep 14 2020 12:00AM', NULL, 'A708FB22-8964-423F-8A1E-661DB050D53B')
+INSERT INTO Race(Company, RaceID, RaceDesc, Category, EnteredBy, ChangedBy, DateIn, DateChange, PortalID) VALUES (0, 10, 'Japanese', 2, 'SLM', NULL, 'Sep 14 2020 12:00AM', NULL, 'EBD56059-E65C-49F5-A59B-02471C3A0658')
+INSERT INTO Race(Company, RaceID, RaceDesc, Category, EnteredBy, ChangedBy, DateIn, DateChange, PortalID) VALUES (0, 11, 'Korean', 2, 'SLM', NULL, 'Sep 14 2020 12:00AM', NULL, '12719A76-3B7F-4851-9AA3-B2E2225E65F2')
+INSERT INTO Race(Company, RaceID, RaceDesc, Category, EnteredBy, ChangedBy, DateIn, DateChange, PortalID) VALUES (0, 12, 'Vietnamese', 2, 'SLM', NULL, 'Sep 14 2020 12:00AM', NULL, 'EB0BCE3F-53B8-4596-B406-A6B37B1EBD09')
+INSERT INTO Race(Company, RaceID, RaceDesc, Category, EnteredBy, ChangedBy, DateIn, DateChange, PortalID) VALUES (0, 13, 'Other Asian', 2, 'SLM', NULL, 'Sep 14 2020 12:00AM', NULL, '86AF88AD-8758-4C2C-A2E9-9D21D01DDFB6')
+INSERT INTO Race(Company, RaceID, RaceDesc, Category, EnteredBy, ChangedBy, DateIn, DateChange, PortalID) VALUES (0, 14, 'Native Hawaiian', 2, 'SLM', NULL, 'Sep 14 2020 12:00AM', NULL, '186BE7F8-10EF-4143-BF49-EC1E57F9285B')
+INSERT INTO Race(Company, RaceID, RaceDesc, Category, EnteredBy, ChangedBy, DateIn, DateChange, PortalID) VALUES (0, 15, 'Guamanian or Chamorro', 2, 'SLM', NULL, 'Sep 14 2020 12:00AM', NULL, 'FF02BD79-FE97-4227-B127-6792CC097A75')
+INSERT INTO Race(Company, RaceID, RaceDesc, Category, EnteredBy, ChangedBy, DateIn, DateChange, PortalID) VALUES (0, 16, 'Other Pacific Islander', 2, 'SLM', NULL, 'Sep 14 2020 12:00AM', NULL, '8749B3A6-0AB0-40CC-8AD7-8734DD7922E1')
+INSERT INTO Race(Company, RaceID, RaceDesc, Category, EnteredBy, ChangedBy, DateIn, DateChange, PortalID) VALUES (0, 17, 'Samoan', 2, 'SLM', NULL, 'Sep 14 2020 12:00AM', NULL, 'DCF4C59B-AEB6-49AD-8720-E118462325B8')
+
+INSERT INTO SpecimenType(SpecimenType, RowStatus, EnteredBy, ChangedBy, DateIn, DateChange, PortalID) VALUES ('Amniotic', 0, 'APEX', NULL, 'Nov 13 2012 12:00AM', NULL, 'D301ACC5-1C93-4532-BCC8-0451D72E6E00')
+INSERT INTO SpecimenType(SpecimenType, RowStatus, EnteredBy, ChangedBy, DateIn, DateChange, PortalID) VALUES ('Aspirate', 0, 'APEX', NULL, 'Jan  1 2008 12:00AM', NULL, '788DF4A7-2001-4186-B9A4-06025C9D9C63')
+INSERT INTO SpecimenType(SpecimenType, RowStatus, EnteredBy, ChangedBy, DateIn, DateChange, PortalID) VALUES ('Blood', 0, 'APEX', NULL, 'Nov 13 2012 12:00AM', NULL, 'FDD3D56B-64DD-4A01-B193-4D36399020CE')
+INSERT INTO SpecimenType(SpecimenType, RowStatus, EnteredBy, ChangedBy, DateIn, DateChange, PortalID) VALUES ('Catheter', 1, 'APEX', NULL, 'Jan  1 2008 12:00AM', NULL, '1A58C368-4521-402B-BE52-647CD590815B')
+INSERT INTO SpecimenType(SpecimenType, RowStatus, EnteredBy, ChangedBy, DateIn, DateChange, PortalID) VALUES ('Cervical', 0, 'APEX', NULL, 'Nov 13 2012 12:00AM', NULL, 'EABE6AD1-428E-497B-978F-274E59C24C99')
+INSERT INTO SpecimenType(SpecimenType, RowStatus, EnteredBy, ChangedBy, DateIn, DateChange, PortalID) VALUES ('Clippings', 0, 'APEX', NULL, 'Jan  1 2008 12:00AM', NULL, 'B38E0164-8D35-4745-BC73-487E49FC9E52')
+INSERT INTO SpecimenType(SpecimenType, RowStatus, EnteredBy, ChangedBy, DateIn, DateChange, PortalID) VALUES ('CSF', 0, 'ApexDeveloper', NULL, 'Oct  7 2011  7:54PM', NULL, '02045D94-0371-4267-BA19-84D62E27D2A7')
+INSERT INTO SpecimenType(SpecimenType, RowStatus, EnteredBy, ChangedBy, DateIn, DateChange, PortalID) VALUES ('Fluid', 0, 'APEX', NULL, 'Jan  1 2008 12:00AM', NULL, 'F8967268-4AA7-4576-9F9E-EF1EE6FED2E4')
+INSERT INTO SpecimenType(SpecimenType, RowStatus, EnteredBy, ChangedBy, DateIn, DateChange, PortalID) VALUES ('IUD', 0, 'APEX', NULL, 'Jan  1 2008 12:00AM', NULL, '0D783134-4235-48A8-8D9F-E75D7AA57842')
+INSERT INTO SpecimenType(SpecimenType, RowStatus, EnteredBy, ChangedBy, DateIn, DateChange, PortalID) VALUES ('N/A', 0, 'APEX', NULL, 'Jan  1 2008 12:00AM', NULL, '2264A3CA-8C9C-4D1E-BBBE-C6719CB72FAB')
+INSERT INTO SpecimenType(SpecimenType, RowStatus, EnteredBy, ChangedBy, DateIn, DateChange, PortalID) VALUES ('Nares', 0, 'ApexDeveloper', NULL, 'Jun 21 2013 11:03AM', NULL, 'F8F4A2F6-9BE3-4966-898C-84E9C7A9E3B0')
+INSERT INTO SpecimenType(SpecimenType, RowStatus, EnteredBy, ChangedBy, DateIn, DateChange, PortalID) VALUES ('Other', 1, 'APEX', NULL, 'Nov 13 2012 12:00AM', NULL, '38AD1B9D-2C4F-4980-8EDE-690E1B10B8C4')
+INSERT INTO SpecimenType(SpecimenType, RowStatus, EnteredBy, ChangedBy, DateIn, DateChange, PortalID) VALUES ('Plasma', 1, 'APEX', NULL, 'Jan  1 2008 12:00AM', NULL, '2029FF23-21E4-421B-B21E-D2B6C8AB2635')
+INSERT INTO SpecimenType(SpecimenType, RowStatus, EnteredBy, ChangedBy, DateIn, DateChange, PortalID) VALUES ('Ratio', 0, 'APEX', NULL, 'Nov 13 2012 12:00AM', NULL, '1EC1D949-33BD-4E1E-A752-88AE72D428BA')
+INSERT INTO SpecimenType(SpecimenType, RowStatus, EnteredBy, ChangedBy, DateIn, DateChange, PortalID) VALUES ('Saliva', 0, 'APEX', NULL, 'Nov 13 2012 12:00AM', NULL, 'A21CFC5D-CCC7-4843-8D24-A127FCBC6C7F')
+INSERT INTO SpecimenType(SpecimenType, RowStatus, EnteredBy, ChangedBy, DateIn, DateChange, PortalID) VALUES ('Scrapings', 0, 'APEX', NULL, 'Jan  1 2008 12:00AM', NULL, 'CA3F296F-59F2-4CD1-8ACD-64AC3B2CD23B')
+INSERT INTO SpecimenType(SpecimenType, RowStatus, EnteredBy, ChangedBy, DateIn, DateChange, PortalID) VALUES ('Semen', 0, 'APEX', NULL, 'Jan  1 2008 12:00AM', NULL, '1E5E8783-7388-4E66-A27D-189421E3BFE8')
+INSERT INTO SpecimenType(SpecimenType, RowStatus, EnteredBy, ChangedBy, DateIn, DateChange, PortalID) VALUES ('Serum', 1, 'ApexDeveloper', NULL, 'Oct  7 2011  7:50PM', NULL, '5655BE3C-14CE-4BCF-A828-927344C31684')
+INSERT INTO SpecimenType(SpecimenType, RowStatus, EnteredBy, ChangedBy, DateIn, DateChange, PortalID) VALUES ('Sputum', 0, 'APEX', NULL, 'Jan  1 2008 12:00AM', NULL, '1F026378-8021-418E-A298-6238FF9CF302')
+INSERT INTO SpecimenType(SpecimenType, RowStatus, EnteredBy, ChangedBy, DateIn, DateChange, PortalID) VALUES ('Stool', 1, 'APEX', NULL, 'Jan  1 2008 12:00AM', NULL, 'F66F7D06-39DE-4632-B38C-E6A61F865AEC')
+INSERT INTO SpecimenType(SpecimenType, RowStatus, EnteredBy, ChangedBy, DateIn, DateChange, PortalID) VALUES ('Swab from nasal sinus', 1, 'APEX', NULL, 'Nov 13 2012 12:00AM', NULL, 'BDD29AD4-D092-448D-A0AF-D3657AF6E1E4')
+INSERT INTO SpecimenType(SpecimenType, RowStatus, EnteredBy, ChangedBy, DateIn, DateChange, PortalID) VALUES ('Synovial', 0, 'APEX', NULL, 'Nov 13 2012 12:00AM', NULL, '28C07842-1D50-4EC5-BD40-EE8D4D567FDA')
+INSERT INTO SpecimenType(SpecimenType, RowStatus, EnteredBy, ChangedBy, DateIn, DateChange, PortalID) VALUES ('Tissue', 0, 'APEX', NULL, 'Jan  1 2008 12:00AM', NULL, '028E1259-EBE8-4DAE-BCDB-719F08F6960B')
+INSERT INTO SpecimenType(SpecimenType, RowStatus, EnteredBy, ChangedBy, DateIn, DateChange, PortalID) VALUES ('Urethral', 0, 'APEX', NULL, 'Nov 13 2012 12:00AM', NULL, 'B42842DF-6FE7-476B-A7B9-744832822871')
+INSERT INTO SpecimenType(SpecimenType, RowStatus, EnteredBy, ChangedBy, DateIn, DateChange, PortalID) VALUES ('Urine', 1, 'APEX', NULL, 'Jan  1 2008 12:00AM', NULL, '49BB82AA-BB16-4945-9ED1-233CFC4C1FCE')
+INSERT INTO SpecimenType(SpecimenType, RowStatus, EnteredBy, ChangedBy, DateIn, DateChange, PortalID) VALUES ('Urine, Timed', 0, 'ApexDeveloper', NULL, 'Apr  1 2012  2:45PM', NULL, 'A59BBDC1-18C3-484A-8EAB-58699881E0F0')
+INSERT INTO SpecimenType(SpecimenType, RowStatus, EnteredBy, ChangedBy, DateIn, DateChange, PortalID) VALUES ('Washings', 0, 'APEX', NULL, 'Jan  1 2008 12:00AM', NULL, '9D3B7223-063F-4564-8581-4D775CAAD53C')
+INSERT INTO SpecimenType(SpecimenType, RowStatus, EnteredBy, ChangedBy, DateIn, DateChange, PortalID) VALUES ('Whole Blood', 1, 'APEX', NULL, 'Jan  1 2008 12:00AM', NULL, 'ACFEC717-A0ED-41C8-8B6F-19F0C3BDD4FD')
+
+INSERT INTO Tests(PortalID, ClientID, TestID, TestName, Status, EnteredBy, DateIn, DateChange, ChangedBy) VALUES ('2857C26D-2490-435E-8230-EFC0FAFBD9D2', '0', '1007', 'BASIC METABOLIC PANEL (BMP) (80048)', 1, 'Testing', 'Sep 21 2020 10:11PM', NULL, NULL)
+INSERT INTO Tests(PortalID, ClientID, TestID, TestName, Status, EnteredBy, DateIn, DateChange, ChangedBy) VALUES ('B6BECECC-3EE6-441D-8C56-2FA9492680B5', '0', '1009', 'LIPID PANEL', 1, 'Testing', 'Sep 21 2020 10:11PM', NULL, NULL)
+INSERT INTO Tests(PortalID, ClientID, TestID, TestName, Status, EnteredBy, DateIn, DateChange, ChangedBy) VALUES ('A85667F9-C397-4024-876E-86B4EC4EA733', '0', '1012', 'COMPREHENSIVE METABOLIC PANEL (CMP) (80053)', 1, 'Testing', 'Sep 21 2020 10:11PM', NULL, NULL)
+INSERT INTO Tests(PortalID, ClientID, TestID, TestName, Status, EnteredBy, DateIn, DateChange, ChangedBy) VALUES ('2FF1C337-83E5-4275-845F-269BFFC4400A', '0', '1013', 'HEPATIC FUNCTION PANEL (81508)', 1, 'Testing', 'Sep 21 2020 10:11PM', NULL, NULL)
+INSERT INTO Tests(PortalID, ClientID, TestID, TestName, Status, EnteredBy, DateIn, DateChange, ChangedBy) VALUES ('15CA6882-C21A-4280-9DD3-DAFD1535273E', '0', '1014', 'PSA, TOTAL', 1, 'Testing', 'Sep 21 2020 10:11PM', NULL, NULL)
+INSERT INTO Tests(PortalID, ClientID, TestID, TestName, Status, EnteredBy, DateIn, DateChange, ChangedBy) VALUES ('90891090-C2F9-411F-A88D-DE264CB4B753', '0', '1015', 'PSA, FREE', 1, 'Testing', 'Sep 21 2020 10:11PM', NULL, NULL)
+INSERT INTO Tests(PortalID, ClientID, TestID, TestName, Status, EnteredBy, DateIn, DateChange, ChangedBy) VALUES ('DEA86976-2C46-461E-826E-0DD5371163E5', '0', '1016', 'TESTOSTERONE, FREE (84402)', 1, 'Testing', 'Sep 21 2020 10:11PM', NULL, NULL)
+INSERT INTO Tests(PortalID, ClientID, TestID, TestName, Status, EnteredBy, DateIn, DateChange, ChangedBy) VALUES ('16303C57-8F3A-4313-ADEA-2321DE160EAC', '0', '1017', 'THYROID STIMULATING HORMONE (TSH) (84443)', 1, 'Testing', 'Sep 21 2020 10:11PM', NULL, NULL)
+INSERT INTO Tests(PortalID, ClientID, TestID, TestName, Status, EnteredBy, DateIn, DateChange, ChangedBy) VALUES ('EBD9E845-B0A7-4848-908B-AF4DEAE6003A', '0', '1018', 'THYROXINE FREE (FT4) (84439)', 1, 'Testing', 'Sep 21 2020 10:11PM', NULL, NULL)
+INSERT INTO Tests(PortalID, ClientID, TestID, TestName, Status, EnteredBy, DateIn, DateChange, ChangedBy) VALUES ('2775BFA8-E39D-433E-9E25-2E3F5104BDE9', '29DAB586-C65F-4DC2-B33C-0BEA7CA26BA2', '10214', 'SARS-COV-2', 1, 'Testing', 'Sep 21 2020 10:11PM', NULL, NULL)
+INSERT INTO Tests(PortalID, ClientID, TestID, TestName, Status, EnteredBy, DateIn, DateChange, ChangedBy) VALUES ('15A959C9-9D6E-4351-8959-E09B69295C78', '0', '1023', 'CBC w/ DIFF (85025)', 1, 'Testing', 'Sep 21 2020 10:11PM', NULL, NULL)
+INSERT INTO Tests(PortalID, ClientID, TestID, TestName, Status, EnteredBy, DateIn, DateChange, ChangedBy) VALUES ('DD5A1147-715D-4E74-8FDA-F6381AA77634', '0', '1133', 'HOMOCYSTEINE (83090)', 1, 'Testing', 'Sep 21 2020 10:11PM', NULL, NULL)
+INSERT INTO Tests(PortalID, ClientID, TestID, TestName, Status, EnteredBy, DateIn, DateChange, ChangedBy) VALUES ('6950DDF7-024F-4F73-AC6F-48183D54B18B', '29DAB586-C65F-4DC2-B33C-0BEA7CA26BA2', '1136', 'VITAMIN B12 (82607)', 1, 'Testing', 'Sep 21 2020 10:11PM', NULL, NULL)
+INSERT INTO Tests(PortalID, ClientID, TestID, TestName, Status, EnteredBy, DateIn, DateChange, ChangedBy) VALUES ('9894A1AD-66F7-4F72-BC90-CEDD1874B47B', '0', '1164', 'MAGNESIUM (83735)', 1, 'Testing', 'Sep 21 2020 10:11PM', NULL, NULL)
+INSERT INTO Tests(PortalID, ClientID, TestID, TestName, Status, EnteredBy, DateIn, DateChange, ChangedBy) VALUES ('E8262C99-02C5-4DA8-87E7-92CA53C218B5', '0', '1182', 'THYROID PANEL (84439)', 1, 'Testing', 'Sep 21 2020 10:11PM', NULL, NULL)
+INSERT INTO Tests(PortalID, ClientID, TestID, TestName, Status, EnteredBy, DateIn, DateChange, ChangedBy) VALUES ('DE5EDC00-5E75-405D-9398-0413E6A03609', '0', '1243', 'HEMOGLOBIN A1C (83036)', 0, 'Testing', 'Sep 21 2020 10:11PM', NULL, NULL)
+INSERT INTO Tests(PortalID, ClientID, TestID, TestName, Status, EnteredBy, DateIn, DateChange, ChangedBy) VALUES ('012ED446-4033-46B7-AACA-854CEE617DDA', '0', '1407', 'SEDIMENTATION RATE (85651)', 1, 'Testing', 'Sep 21 2020 10:11PM', NULL, NULL)
+
+INSERT INTO Users(ClientName, ClientID, ProviderID, PatientID, UserName, Password, DOB, ZipCode, Email, Phone, SSN, DateIn) VALUES (NULL, '29DAB586-C65F-4DC2-B33C-0BEA7CA26BA2', NULL, NULL, 'doc@money.com', '823638ce34deb93a0faa7ea1e26de93b', NULL, NULL, NULL, NULL, NULL, 'Sep 21 2020  8:56PM')
+INSERT INTO Users(ClientName, ClientID, ProviderID, PatientID, UserName, Password, DOB, ZipCode, Email, Phone, SSN, DateIn) VALUES (NULL, '29DAB586-C65F-4DC2-B33C-0BEA7CA26BA2', NULL, '8C36841C-8237-4E9D-BE0D-A9B9769CB44E', NULL, '823638ce34deb93a0faa7ea1e26de93b', '1950-01-01', '33101', NULL, '5555551212', NULL, 'Sep 21 2020  8:56PM')
+INSERT INTO Users(ClientName, ClientID, ProviderID, PatientID, UserName, Password, DOB, ZipCode, Email, Phone, SSN, DateIn) VALUES (NULL, '29DAB586-C65F-4DC2-B33C-0BEA7CA26BA2', NULL, '29AA2597-8172-4AA6-9D58-0BADB7989D9D', NULL, '823638ce34deb93a0faa7ea1e26de93b', '1950-02-02', '33101', NULL, '5555551212', NULL, 'Sep 21 2020  8:56PM')
+INSERT INTO Users(ClientName, ClientID, ProviderID, PatientID, UserName, Password, DOB, ZipCode, Email, Phone, SSN, DateIn) VALUES (NULL, '29DAB586-C65F-4DC2-B33C-0BEA7CA26BA2', NULL, '09D5CEAC-9517-4B7A-9D0C-78FDE074C6CD', NULL, '823638ce34deb93a0faa7ea1e26de93b', '1950-03-03', '33101', NULL, '5555551212', NULL, 'Sep 21 2020  8:56PM')
+INSERT INTO Users(ClientName, ClientID, ProviderID, PatientID, UserName, Password, DOB, ZipCode, Email, Phone, SSN, DateIn) VALUES (NULL, '29DAB586-C65F-4DC2-B33C-0BEA7CA26BA2', NULL, '3852269E-CE72-435F-B4F4-7221B5C5658F', NULL, '823638ce34deb93a0faa7ea1e26de93b', '1950-04-04', '33101', NULL, '5555551212', NULL, 'Sep 21 2020  8:56PM')
+INSERT INTO Users(ClientName, ClientID, ProviderID, PatientID, UserName, Password, DOB, ZipCode, Email, Phone, SSN, DateIn) VALUES (NULL, '29DAB586-C65F-4DC2-B33C-0BEA7CA26BA2', '40F7DDEA-62B6-4582-B6FC-AA1D8513F8A6', NULL, 'doc@money.com', 'C9B65C09C21E829D5EC5B60269C6FE21', NULL, NULL, NULL, NULL, NULL, 'Sep 21 2020  8:56PM')
+INSERT INTO Users(ClientName, ClientID, ProviderID, PatientID, UserName, Password, DOB, ZipCode, Email, Phone, SSN, DateIn) VALUES (NULL, '29DAB586-C65F-4DC2-B33C-0BEA7CA26BA2', '05F87BFD-9294-4351-9ADC-F79D89BDC1DD', NULL, 'doc2@money.com', 'F46455D513A942868BC48EAA16336A38', NULL, NULL, NULL, NULL, NULL, 'Sep 21 2020  8:56PM')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
