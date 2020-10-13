@@ -1,0 +1,52 @@
+body {
+font-family:'Times New Roman', Times, serif;
+}
+input {
+font-family:'Times New Roman', Times, serif;
+font-size:32px;
+}
+label{
+font-family:Arial;
+font-size:32px;
+color:#999999;
+}
+.tblSaveForm {
+border-top:2px #999999 solid;
+background-color: #f8f8f8;
+}
+.tableheader {
+background-color: #42f5b3;
+font-size:32px;
+}
+.btnSave {
+background-color:#2d96ec;
+padding:12px;
+font-size:32px;
+border-color:#FF6600;
+border-radius:4px;
+color:white;
+}
+.btnCancel {
+background-color:#db2840;
+padding:12px;
+font-size:32px;
+border-color:#FF6600;
+border-radius:4px;
+color:white;
+}
+.message {
+color: #FF0000;
+text-align: center;
+width: 100%;
+}
+.txtField {
+padding: 10px;
+border:#fedc4d 1px solid;
+border-radius:4px;
+}
+.required {
+color: #FF0000;
+font-size:22px;
+font-weight:italic;
+padding-left:10px;
+}

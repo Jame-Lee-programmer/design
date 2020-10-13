@@ -1,0 +1,73 @@
+Requisition Form
+
+This is the form that will generate when the "PRINT Requisition" button is pressed.
+This is a one (1) page printable form that the client will print and send to the lab with their specimens.
+My expectation is that it generates to a new window, in the specified format, ready to right-click and print.
+Beautify as you see fit, without loosing the spirit of the form.
+
+Form Layout: REQLayout.rtf (properly formated for WordPad)
+Paper Size: 8 1/2" by 11"
+Margins: 1/2" on all sides
+
+
+Header Image: REQHeader.bmp
+
+Barcode Font: Free3OF9.TTF
+The barcode will hold a ten (10) digit number.
+You must use '*' before and after what you want in the barcode to create a valid barcode.
+So, if you want '0123456789' in the barcode, you use '*0123456789*'
+The sample REQ.rtf shows this font at 48pt.
+
+
+Body Font: Courier.
+This font is used because it is a monospaced font, making it easy to align columns.
+Headers are 14pt and bold.
+Other text is 11pt.
+
+Body Text: See REQ.rtf
+All database fields are specified in REQ.rtf.
+
+Please note that there are two (2) new columns, Orders.ReqNo and OrderTests.SID.
+These fields will be used in the barcodes. ReqNo on this form, and SID in the labels later.
+
+
+Use these two queries to pull the data for the form:
+(changing the OrderID in the WHERE clause)
+
+#1: Client, Order, and Patient Info
+
+SELECT DISTINCT 
+Orders.ReqNo as Barcode,
+ISNULL(Users.ClientName,'NOT PROVIDED') as ClientName, 
+Orders.ClientID,
+CONVERT(VARCHAR,Orders.DateOrdered,101) as DateOrdered, 
+Providers.ProviderName, 
+CONVERT(VARCHAR,Orders.DateCollected,101) + ' ' + CONVERT(VARCHAR,Orders.DateCollected,108) as DateCollected, 
+ISNULL(Orders.CollectedBy,'NOT PROVIDED') as CollectedBy, 
+ISNULL(Orders.SpecimenType,'NOT PROVIDED') as SpecimenType, 
+Orders.ReqNo,
+Orders.OrderID,
+Patients.NameLast + ', ' + Patients.NameFirst as PatientName,
+Patients.MRN + ' / ' + CONVERT(VARCHAR(36),Patients.PatientID) as MRNPID,
+CONVERT(VARCHAR,Patients.DOB,101) + ' ' + Patients.Sex as DOBSex,  
+Race.RaceDesc, Ethnicity.Ethnicity, 
+ISNULL(Patients.StreetAddress,'NOT PROVIDED') as StreetAddress, ISNULL(Patients.ZipCode, 'NOT PROVIDED') as ZipCode, 
+ISNULL(Patients.City, 'NOT PROVIDED') as City, ISNULL(Patients.State, 'NOT PROVIDED') as State, ISNULL(Patients.County,'NOT PROVIDED') as County,
+ISNULL(Patients.Telephone,'NOT PROVIDED') as Telephone, ISNULL(Patients.Email, 'NOT PROVIDED') as Email
+FROM Ethnicity 
+INNER JOIN Patients ON Ethnicity.EthnicityID = Patients.EthnicityID 
+INNER JOIN Race ON Patients.RaceID = Race.RaceID 
+INNER JOIN Orders ON Patients.PatientID = Orders.PatientID 
+INNER JOIN Providers ON Orders.ProviderID = Providers.ProviderID 
+INNER JOIN Users ON Orders.ClientID = Users.ClientID
+WHERE Orders.OrderID = '84E55AC3-C434-4382-9DD8-2416E171D624'
+
+
+
+#2: Tests Info
+SELECT OrderTests.TestID, LEFT(Tests.TestName,35) as TestName, OrderTests.SID
+FROM OrderTests 
+INNER JOIN Tests ON OrderTests.TestID = Tests.TestID
+WHERE OrderTests.OrderID = '84E55AC3-C434-4382-9DD8-2416E171D624'
+ORDER BY OrderTests.SeqNo
+
