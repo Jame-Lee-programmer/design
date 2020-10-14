@@ -70,13 +70,12 @@
 	<script type="text/javascript" src="./assets/js/code39.js"></script>
     <style type="text/css">
 		@font-face{
-		font-family: 'Free 3 of 9 Regular';
+		font-family: 'Free 3 of 9';
 		font-size: 48px;
 		text-align: left;
-		src:url('./assets/icon-fonts/FREE3OF9.TTF'); 
 		src:url('./assets/icon-fonts/FREE3OF9.TTF') format('truetype');	
 		}
-		.displaybarcode {font-family: Free 3 of 9 Regular; font-size: 48pt; text-align: left;}
+		.displaybarcode {font-family: 'Free 3 of 9'; font-size: 48pt; text-align: left;}
 		.titletext{
 			text-align: left;
 			font-weight: bold;
@@ -109,7 +108,7 @@
 		<div class="row">
 			<div class="col-md-12">
 				<div id="inputdata" style="float: left;">
-					<label style="font-family: Free 3 of 9 Regular; font-size: 48pt; text-align: left;"><?php if($row!=null){echo '*'.$row['Barcode'].'*';} else{echo '';} ?></label>
+					<label id="bar_code" style="font-family: 'Free 3 of 9'; font-size: 48pt; text-align: left;"><?php if($row!=null){echo '*'.$row['Barcode'].'*';} else{echo '';} ?></label>
 				</div>
 			</div>	
 		</div>
@@ -334,18 +333,20 @@
 </div>
 <br><br>
 <script type="text/javascript">
-function get_object(id) {
-	var object = null;
-	if (document.layers) {
-		object = document.layers[id];
-	} else if (document.all) {
-		object = document.all[id];
-	} else if (document.getElementById) {
-		object = document.getElementById(id);
-	}
-	return object;
-}
-get_object("inputdata").innerHTML=DrawCode39Barcode(get_object("inputdata").innerHTML,1);
+// function get_object(id) {
+// 	var object = null;
+// 	if (document.layers) {
+// 		object = document.layers[id];
+// 	} else if (document.all) {
+// 		object = document.all[id];
+// 	} else if (document.getElementById) {
+// 		object = document.getElementById(id);
+// 	}
+// 	return object;
+// }
+// console.log(get_object('inputdata'))
+// document.getElementById('bar_code').innerHTML = DrawCode39Barcode(document.getElementById('bar_code').innerHTML, 1)
+// get_object("inputdata").innerHTML=DrawCode39Barcode(get_object("inputdata").innerHTML,1);
 
 window.oncontextmenu = function () {
     window.print();

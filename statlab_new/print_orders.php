@@ -111,7 +111,7 @@
 		<div class="row">
 			<div class="col-md-12">
 				<div id="inputdata" style="float: left;">
-					<label style="font-family: Free 3 of 9 Regular; font-size: 48pt; text-align: left;"><?php if($row!=null){echo '*'.$row['Barcode'].'*';} else{echo '';} ?></label>
+					<label id="bar_code" style="font-family: 'Free 3 of 9'; font-size: 48pt; text-align: left;"><?php if($row!=null){echo '*'.$row['Barcode'].'*';} else{echo '';} ?></label>
 				</div>
 			</div>	
 		</div>
@@ -336,18 +336,18 @@
 </div>
 <br><br>
 <script type="text/javascript">
-function get_object(id) {
-	var object = null;
-	if (document.layers) {
-		object = document.layers[id];
-	} else if (document.all) {
-		object = document.all[id];
-	} else if (document.getElementById) {
-		object = document.getElementById(id);
-	}
-	return object;
-}
-get_object("inputdata").innerHTML=DrawCode39Barcode(get_object("inputdata").innerHTML,1);
+// function get_object(id) {
+// 	var object = null;
+// 	if (document.layers) {
+// 		object = document.layers[id];
+// 	} else if (document.all) {
+// 		object = document.all[id];
+// 	} else if (document.getElementById) {
+// 		object = document.getElementById(id);
+// 	}
+// 	return object;
+// }
+// get_object("inputdata").innerHTML=DrawCode39Barcode(get_object("inputdata").innerHTML,1);
 
 window.oncontextmenu = function () {
     window.print();
